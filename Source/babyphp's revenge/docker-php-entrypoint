@@ -1,0 +1,10 @@
+#!/bin/sh
+
+sed -i "s/flag_here/$FLAG/" /var/www/html/flag.php
+
+rm /etc/docker-php-entrypoint
+openrc default
+rc-service nginx start
+rc-service php-fpm start
+
+tail -F /var/log/nginx/error.log /var/log/nginx/access.log

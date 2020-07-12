@@ -1,0 +1,12 @@
+#!/bin/sh
+
+rm /etc/docker-php-entrypoint
+openrc default
+rc-service nginx start
+rc-service php-fpm start
+rc-service mariadb start
+
+mariadb < /init.sql && rm /init.sql
+mariadb -uroot  -e "USE ctf;INSERT INTO fllll12tw1llllag VALUES ('$FLAG')"
+
+tail -F /var/log/nginx/error.log /var/log/nginx/access.log

@@ -1,18 +1,12 @@
-<?php 
+<?php
 include "head.php";
 
-
-if(!isset($_SESSION['username'])){
+if (!isset($_SESSION['username'])) {
     header("location: /login.php");
 }
 
-if(isset($_POST['msg']) or isset($_POST['verify_code'])){
-    if (substr(sha1($_POST['verify_code']),0,5) !== $_SESSION['verify_code']){
-        die("illegal verify code.");
-    }
-    $verify_code = gen_verify_code();
-    $_SESSION['verify_code'] = $verify_code;
-
+if (isset($_POST['msg']) or isset($_POST['verify_code'])) {
+    chk_verify_code();
     $username = $_SESSION['username'];
     $message = $_POST['msg'];
     sqlifilter($username);
@@ -23,33 +17,29 @@ if(isset($_POST['msg']) or isset($_POST['verify_code'])){
     $result = mysqli_query($conn, $insert_sql);
     var_dump($result);
     header("location: /index.php");
-}else{
+    die();
+}
 
-$verify_code = gen_verify_code();
-$_SESSION['verify_code'] = $verify_code;
-
-echo <<<EOF
+?>
 <html>
 <body>
 <h1>在这里随便输入一些可有可无的东西</h1>
 <hr />
 <pre>
-EOF;
-
+<?php
 $select_sql = "select * from user_posts order by id desc limit 0,200";
 $result = mysqli_query($conn, $select_sql);
-while($row = mysqli_fetch_array($result)){
+while ($row = mysqli_fetch_array($result)) {
 
-echo htmlentities($row['username'].' at '.$row['datetime'].' said:');
-echo '<br />';
-echo '&nbsp;&nbsp;&nbsp;';
-echo htmlentities($row['message']);
-echo '<br />';
-echo '<br />';
+    echo htmlentities($row['username'] . ' at ' . $row['datetime'] . ' said:');
+    echo '<br />';
+    echo '&nbsp;&nbsp;&nbsp;';
+    echo htmlentities($row['message']);
+    echo '<br />';
+    echo '<br />';
 
 }
-
-echo <<<EOF
+?>
 </pre>
 <a href='users.php'>所有用户</a>
 <br />
@@ -61,16 +51,7 @@ echo <<<EOF
 <input type="submit" value="UP!"></input>
 <br />
 <br />
-substr(sha1( <input name="verify_code" type="text" size="30"></input> ), 0, 5) === 
-EOF;
-
-echo $verify_code;
-
-echo <<<EOF
+substr(sha1( <input name="verify_code" type="text" size="30"></input> ), 0, 5) ===<?=gen_verify_code()?>
 </form>
 </body>
 </html>
-EOF;
-}
-
-?>

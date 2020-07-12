@@ -1,9 +1,9 @@
 from flask import Flask, escape, request, make_response, render_template
 
-from session import *
-from utils import *
-from flag import FLAG
-from parser import parse
+from .session import *
+from .utils import *
+from .flag import FLAG
+from .parser import parse
 
 app = Flask(__name__)
 
@@ -14,13 +14,15 @@ def index():
         username = session_decode(user)
     except Exception:
         username = get_username()
-        content=escape(username)
+        resp = make_response(render_template('main.html', content=escape(username)))
+        resp.set_cookie("user", session_encode(username),
+                        expires=datetime.datetime.today() + datetime.timedelta(hours=3))
     else:
         if username == "admin":
             content=escape(FLAG)
         else:
             content=escape(username)
-    resp = make_response(render_template('main.html', content=content))
+        resp = make_response(render_template('main.html', content=content))
     return resp
 
 @app.route('/sandbox')
@@ -40,4 +42,6 @@ def render_static():
     resp.mimetype = "text/plain"
     return resp
 
-app.run(port=5000)
+if __name__ == '__main__':
+    app.run()
+

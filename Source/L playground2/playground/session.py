@@ -1,6 +1,6 @@
 import base64
-from hash import MDA
-from flag import seed
+from .hash import MDA
+from .flag import seed
 
 def encode(info):
     return str(base64.b32encode(bytes(info, 'utf-8')), 'utf-8')

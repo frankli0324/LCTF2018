@@ -2,8 +2,9 @@ import re
 import os
 http_schema = re.compile(r"https?")
 url_parser = re.compile(r"(\w+)://([\w\-@\.:]+)/?([\w/_\-@&\?\.=%()]+)?(#[\w\-@&_\?()/%]+)?")
-base_dir = os.path.dirname(os.path.abspath(__file__))
-sandbox_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sandbox")
+base_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "playground")
+sandbox_dir = os.path.join(base_dir, "sandbox")
+
 def parse_file(path):
     filename = os.path.join(sandbox_dir, path)
     if "./" in filename or ".." in filename:
